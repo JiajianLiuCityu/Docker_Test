@@ -28,12 +28,13 @@ def merge_all_results():
     print(f"[INFO] Found {len(csv_files)} CSV file(s)")
 
     all_data = []
+    unit_map = {}  # Store unit for each metric
+
     for f in csv_files:
         try:
             df = pd.read_csv(f)
 
             # Extract instance type from filename
-            # Example: c5.large.csv -> c5.large
             basename = os.path.basename(f)
             instance_name = basename.replace('.csv', '')
 
@@ -46,6 +47,11 @@ def merge_all_results():
             if len(df) == 0:
                 print(f"[WARN] {basename} - No valid data after filtering")
                 continue
+
+            # Store unit information
+            for _, row in df.iterrows():
+                if row['Metric'] not in unit_map:
+                    unit_map[row['Metric']] = row['Unit']
 
             df['Instance'] = instance_name
             all_data.append(df)
@@ -61,22 +67,24 @@ def merge_all_results():
     # Combine all data
     combined_df = pd.concat(all_data, ignore_index=True)
 
-    # Create pivot table: rows = Metric, columns = Instance, values = Value
+    # Create pivot table
     pivot_df = combined_df.pivot_table(
         index='Metric',
         columns='Instance',
         values='Value',
-        aggfunc='first'  # Use first since each metric appears once per instance
+        aggfunc='first'
     )
 
-    # Reset index to make Metric a column
     pivot_df = pivot_df.reset_index()
 
-    # Reorder columns (optional: sort instance names alphabetically)
-    instance_cols = sorted([col for col in pivot_df.columns if col != 'Metric'])
-    pivot_df = pivot_df[['Metric'] + instance_cols]
+    # Add unit column
+    pivot_df['Unit'] = pivot_df['Metric'].map(unit_map)
 
-    # Round numeric values to 2 decimal places
+    # Reorder columns: Metric, Unit, then instance columns
+    instance_cols = sorted([col for col in pivot_df.columns if col not in ['Metric', 'Unit']])
+    pivot_df = pivot_df[['Metric', 'Unit'] + instance_cols]
+
+    # Round numeric values
     for col in instance_cols:
         pivot_df[col] = pivot_df[col].round(2)
 
@@ -87,8 +95,8 @@ def merge_all_results():
 
     print(f"\n[SUCCESS] Pivot table created!")
     print(f"[INFO] Output path: {output_path}")
-    print(f"[INFO] Shape: {pivot_df.shape[0]} metrics x {pivot_df.shape[1] - 1} instances")
-    print("\n[PREVIEW] Pivot table:")
+    print(f"[INFO] Shape: {pivot_df.shape[0]} metrics x {len(instance_cols)} instances")
+    print("\n[PREVIEW] Pivot table with units:")
     print(pivot_df.to_string(index=False))
 
 

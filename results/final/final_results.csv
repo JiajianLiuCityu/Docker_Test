@@ -1,7 +1,7 @@
-Metric,c5.large,t3.micro,t4g.micro
-CPU_Throughput,477.63,407.92,989.04
-Disk_Container_Layer,432.0,606.0,687.0
-Disk_Docker_Volume,176.0,687.0,274.0
-Mem_Bandwidth,20808.61,17788.15,12597.2
-Network_Bridge_Mode,34.0,30.9,32.9
-Network_Host_Mode,37.3,31.3,34.7
+Metric,Unit,c5.large,t3.micro,t4g.micro
+CPU_Throughput,eps,477.63,407.92,989.04
+Disk_Container_Layer,MB/s,432.0,606.0,687.0
+Disk_Docker_Volume,MB/s,176.0,687.0,274.0
+Mem_Bandwidth,MiB/s,20808.61,17788.15,12597.2
+Network_Bridge_Mode,Gbits/sec,34.0,30.9,32.9
+Network_Host_Mode,Gbits/sec,37.3,31.3,34.7
