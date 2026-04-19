@@ -1,7 +1,7 @@
 Metric,Value,Unit
-CPU_Throughput,477.63,eps
-Mem_Bandwidth,20808.61,MiB/s
-Disk_Container_Layer,432,MB/s
-Disk_Docker_Volume,176,MB/s
-Network_Bridge_Mode,34.0,Gbits/sec
-Network_Host_Mode,37.3,Gbits/sec
+CPU_Throughput,450.77,eps
+Mem_Bandwidth,19700.69,MiB/s
+Disk_Container_Layer,683,MB/s
+Disk_Docker_Volume,359,MB/s
+Network_Bridge_Mode,35.2,Gbits/sec
+Network_Host_Mode,36.8,Gbits/sec
