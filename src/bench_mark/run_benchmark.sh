@@ -14,10 +14,10 @@ echo "Mem_Bandwidth,$MEM_RES,MiB/s" >> $OUT
 
 echo "--- Running Disk I/O tests ---"
 
-D_LAYER=$(sudo docker run --rm ubuntu:24.04 sh -c "dd if=/dev/zero of=test_file bs=1M count=1024 oflag=direct 2>&1" | awk '/copied/ {print $(NF-1)}')
+D_LAYER=$(sudo docker run --rm ubuntu:24.04 sh -c "dd if=/dev/zero of=test_file bs=1M count=100 conv=fdatasync 2>&1" | awk '/copied/ {print $(NF-1)}')
 echo "Disk_Container_Layer,$D_LAYER,MB/s" >> $OUT
 
-D_VOLUME=$(sudo docker run --rm -v $(pwd):/data ubuntu:24.04 sh -c "dd if=/dev/zero of=/data/test_file bs=1M count=1024 oflag=direct 2>&1" | awk '/copied/ {print $(NF-1)}')
+D_VOLUME=$(sudo docker run --rm -v $(pwd):/data ubuntu:24.04 sh -c "dd if=/dev/zero of=/data/test_file bs=1M count=100 conv=fdatasync 2>&1" | awk '/copied/ {print $(NF-1)}')
 echo "Disk_Docker_Volume,$D_VOLUME,MB/s" >> $OUT
 
 echo "--- Running Network tests ---"
